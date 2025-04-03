@@ -1,0 +1,35 @@
+services:
+  database:
+    image: postgres:14.6
+    restart: always
+    container_name: database
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./postgres/dev.database.env
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 60s
+      retries: 60
+    command:
+      -p 5432
+
+  dbt:
+    build:
+      context: .
+      dockerfile: Dockerfile.dbt
+    platform: linux/amd64  # Changed from x86_64 to amd64
+    image: dbt
+    ports:
+      - "8090:8090"
+    network_mode: "host"
+    env_file:
+      - .env.local
+    working_dir: /usr/app
+    volumes:
+      - ./dbt:/usr/app
+    entrypoint: []
+    command: tail -f /dev/null
