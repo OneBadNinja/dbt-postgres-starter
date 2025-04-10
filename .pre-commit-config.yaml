@@ -1,0 +1,18 @@
+repos:
+- repo: https://github.com/dbt-checkpoint/dbt-checkpoint
+  rev: v2.0.6
+  hooks:
+  - id: dbt-parse
+    files: models/
+  # Ensure source tables in schema.yml properties files all have descriptions
+  - id: check-source-table-has-description
+    name: check no clear table names
+    files: models/example/
+  # Ensure source columns in schema.yml properties files all have descriptions
+  - id: check-source-columns-have-desc
+    name: check columns with desc
+    files: models/example/
+
+  - id: check-script-has-no-table-name
+    name: check no clear table names
+    files: models/example/
